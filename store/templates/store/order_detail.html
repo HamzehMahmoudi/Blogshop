@@ -1,0 +1,53 @@
+{% load static %}
+{% load mytags %}
+{% load i18n %}
+{% get_current_language_bidi as bidi %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+</head>    
+<body class="container">
+<dl class="row mt-5">
+    <dt class="col-sm-3">{% trans "client" %}</dt>
+    <dd class="col-sm-9">{{ object.owner.username}}</dd>
+    <dt class="col-sm-3">{% trans "date" %}</dt>
+    <dd class="col-sm-9">{{ object.created_on.date }} {{ object.created_on.time }}</dd>
+</dl>
+<table class="table table-bordered table-striped {% if bidi == rtl %}rtl{% endif %}">
+    <h1 class="text-success rtl ">
+    <i class="fa fa-shopping-basket"></i>
+    {% trans "my orders" %}
+    </h1>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class = "col-6">{% trans "product" %}</th>
+            <th>{% trans "Qty" %}</th>
+            <th>{% trans "fee" %}</th>
+            <th>{% trans "total price" %}</th>
+        </tr>
+        </thead>
+        {% for order in object.orderitem_set.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ order.product}}</td>
+                <td>{{ order.qty }}</td>
+                <td>{{ order.price }} $</td>
+                <td>{{ order.get_total }} $</td>
+            </tr>
+        {% endfor %}
+ <tfoot>
+    <tr>
+        <td colspan="3">
+            {{ object.get_total_qty }}
+        </td>
+        <td colspan="2">
+            {% trans "total price" %} : {{ object.get_total_price }}
+        </td>
+    </tr>
+    </tfoot>        
+</table>
+</body>

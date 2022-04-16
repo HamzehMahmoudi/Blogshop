@@ -1,0 +1,60 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>product</th>
+            <th>qty</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>{{ forloop.revcounter }}</td>
+                <td>{{ object.product }}</td>
+                <td>
+                    <a class="deduct-btn btn btn-sm rounded btn-light" data-product-id="{{ object.product.pk }}">➖</a>
+                    <span class="qty">{{ object.qty }}</span>
+                </td>
+                <td><a href="{% url "delet_from_cart" object.product.pk %}" class="btn-sm btn-danger">❌</td>
+            </tr>
+        {%empty%} 
+            <tr>
+                <td colspan = "4">your cart is empty</td>
+            </tr>   
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'order' %}" class="btn btn-success">Order<a>
+{% endblock%}
+{% block page_scripts %}
+    <script>
+    $(document).ready(function (){
+        $('a.deduct-btn').click(function (event){
+            const productId = event.currentTarget.dataset.productId;
+            $.ajax({
+                method:'post',
+                url:"{% url 'deduct-from-cart' %}",
+                data:{
+                    product_id: productId
+                },
+                success:function(response){
+                    //shit happens
+                    let qty_span = $(event.currentTarget).next()[0];
+                    qty_span.innerHtml = response.qty;
+                },
+                error:function(){
+                    //another shit happens
+                    
+                }
+
+            });
+        });
+
+    });
+    
+    </script>
+{% endblock page_scripts %}
+

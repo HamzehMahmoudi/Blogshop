@@ -1,0 +1,70 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% load mytags %}
+{% load i18n %}
+{% get_current_language_bidi as bidi %}
+{% block page_header_title %}
+orders
+{% endblock %}
+{% block content %}
+<table class="table table-bordered table-striped {% if bidi == rtl %}rtl{% endif %}">
+    <h1 class="text-success rtl ">
+        <i class="fa fa-shopping-basket"></i>
+        {% trans "my orders" %}
+    </h1>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans "date" %}</th>
+            <th>{% trans "status" %}</th>
+            <th class="col-6">{% trans "product" %}</th>
+            <th>{% trans "Qty" %}</th>
+            <th>{% trans "total price" %}</th>
+            <th>{% trans "Print" %}</th>
+        </tr>
+    </thead>
+    {% for order in page_obj %}
+    <tr>
+        <td>{{ order.pk }}</td>
+        {% comment %} <td>{{ order.created_on.date }} {{ order.created_on.time}} </td> {% endcomment %}
+        <td>{{ order.created_on|jdate:"%Y-%m-%d %H:%M" }}</td>
+        <td>{{ order.get_statuse_display}}</td>
+        <td>
+            {% for item in order.orderitem_set.all %}
+            <p style="direction: rtl;">
+                {{ forloop.counter }}- {{ item.product }} {{ item.qty }}
+            </p>
+            {% endfor %}
+        </td>
+        <td>{{ order.get_total_qty}}</td>
+        <td>{{ order.get_total_price}}</td>
+        <td>
+            <a href="{% url 'print-order' order.pk %}">
+                <i class="fa fa-print"></i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row ">
+    <div class="pagination">
+        <span class="current">
+            {% if page_obj.has_previous %}
+            <a class="page-link" href="?page=1">&laquo; first</a>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+{% endblock %}

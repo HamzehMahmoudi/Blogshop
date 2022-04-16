@@ -1,0 +1,27 @@
+{% extends 'blog/base.html' %}
+{% block page_header_title %}
+    🆕 {{ page_title }}
+{% endblock %}
+{% block content %}
+    <div class="col-12">
+        <h3>{{ page_title }}</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">عنوان پست</label>
+                <input type="text" id="title" class="form-control" value="{{ form.initial.title }}" name="title">
+            </div>
+            <div class="form-group">
+                <label for="content">متن پست</label>
+                <textarea name="content" id="content" cols="50" rows="10" class="form-control">{{ form.initial.content }}</textarea>
+            </div>
+            <div class="form-group">
+                {{ form.intro_image }}
+            </div>
+            <div class="form-group">
+                {{ form.categories }}
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Save</button>
+        </form>
+    </div>
+{% endblock %}

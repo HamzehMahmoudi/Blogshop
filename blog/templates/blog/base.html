@@ -1,0 +1,108 @@
+{% load static %}
+{% load l10n %}
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+
+    <title>
+        My Blog:
+        {% block page_header_title %}
+            {{ page_title }}
+        {% endblock %}
+    </title>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar rounded navbar-expand-md navbar-dark bg-success">
+        <a class="navbar-brand" href="/">Home</a>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                {% if not user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:login' %}">Login
+                            <span class="sr-only"></span></a>
+                    </li>
+                {% endif %}
+                {% if perms.blog.add_post %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:create-post' %}">Create Post
+                            <span class="sr-only">(current)</span></a>
+                    </li>
+                {% endif %}
+                {% if perms.blog.add_category %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:create-category' %}">
+                            Create Category
+                        </a>
+                    </li>
+                {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products' %}">
+                            Product
+                        </a>
+                    </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:logout' %}">Logout 👋🏻
+                            <span class="sr-only"></span></a>
+                    </li>
+                {% endif %}
+                   <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart' %}">cart
+                            <span class="sr-only"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'orders' %}">orders
+                            <span class="sr-only"></span></a>
+                    </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart' %}">cart 🛒
+                        <span class="sr-only"></span></a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:edit-profile' %}">
+                            {{ request.user.get_full_name }}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {# Django's messages #}
+    <div class="row mt-3 mb-3">
+        <div class="col-12">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible">
+                        {{ message }}
+                        <button type="button" data-dismiss="alert" class="close">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {# django's messages ends #}
+    <div>
+        {% block content %}YOUR CONTENT GOES HERE{% endblock %}
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+{% block page_scripts %}{% endblock %}
+
+<footer class="footer">
+    <div class="container">
+        <span class="text-muted">Copyright &copy; {{ year |unlocalize}}</span>
+    </div>
+</footer>
+</body>
+</html>
